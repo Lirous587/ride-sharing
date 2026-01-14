@@ -13,7 +13,7 @@ k8s_yaml('./infra/development/k8s/app-config.yaml')
 
 gateway_compile_cmd = 'CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o build/api-gateway ./services/api-gateway'
 if os.name == 'nt':
-  gateway_compile_cmd = './infra/development/docker/api-gateway-build.bat'
+  gateway_compile_cmd = '.\\infra\\development\\docker\\api-gateway-build.bat'
 
 local_resource(
   'api-gateway-compile',
