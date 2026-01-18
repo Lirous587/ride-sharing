@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"ride-sharing/services/trip-service/internal/domain"
 	"ride-sharing/shared/types"
+	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -34,6 +35,9 @@ func (s *service) CreateTrip(ctx context.Context, fare *domain.RideFareModel) (*
 }
 
 func (s *service) GetRoute(ctx context.Context, pickup, destination *types.Coordinate) (*types.OsrmAPIResponse, error) {
+	time.Sleep(4 * time.Second)
+	
+
 	baseUrl := "http://router.project-osrm.org"
 
 	url := fmt.Sprintf(

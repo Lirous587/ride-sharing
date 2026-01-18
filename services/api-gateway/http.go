@@ -7,9 +7,12 @@ import (
 	"net/http"
 	"ride-sharing/shared/contracts"
 	"ride-sharing/shared/util"
+	"time"
 )
 
 func handleTripPreview(w http.ResponseWriter, r *http.Request) {
+	time.Sleep(4 * time.Second)
+
 	var reqBody previewTripRequest
 
 	if err := json.NewDecoder(r.Body).Decode(&reqBody); err != nil {
