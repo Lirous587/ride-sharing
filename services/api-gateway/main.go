@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/signal"
 	"ride-sharing/shared/env"
+	"ride-sharing/shared/util"
 	"syscall"
 	"time"
 )
@@ -20,13 +21,17 @@ func main() {
 
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("POST /trip/preview", enableCORS(handleTripPreview))
+	mux.HandleFunc("POST /trip/preview", handleTripPreview)
 	mux.HandleFunc("/ws/drivers", handleDriversWebSocket)
 	mux.HandleFunc("/ws/riders", handleRidersWebSocket)
 
+	mux.HandleFunc("GET /test", func(w http.ResponseWriter, r *http.Request) {
+		util.WriteJson(w, 200, "ok")
+	})
+
 	server := &http.Server{
 		Addr:    httpAddr,
-		Handler: mux,
+		Handler: enableCORS(mux),
 	}
 
 	serverErrors := make(chan error, 1)
