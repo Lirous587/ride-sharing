@@ -1,11 +1,11 @@
 package main
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
+	"ride-sharing/services/api-gateway/grpc_clients"
 	"ride-sharing/shared/contracts"
 	"ride-sharing/shared/util"
 
@@ -27,34 +27,25 @@ func handleTripPreview(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	jsonBytes, err := json.Marshal(reqBody)
+	tripService, err := grpc_clients.NewTripServiceClient()
 	if err != nil {
-		http.Error(w, fmt.Sprintf("failed to marshal request", err), http.StatusInternalServerError)
-		return
+		log.Fatal(err)
 	}
 
-	reader := bytes.NewBuffer(jsonBytes)
+	defer tripService.Close()
 
-	// Call trip service
-	resp, err := http.Post("http://trip-service:8083/trip/preview", "application/json", reader)
+	tripPreview, err := tripService.Client.PreviewTrip(r.Context(), reqBody.toProto())
 	if err != nil {
-		http.Error(w, fmt.Sprintf("call trip server failed err: %v", err), http.StatusInternalServerError)
-		return
-	}
-	defer resp.Body.Close()
-
-	var respBody any
-
-	if err := json.NewDecoder(resp.Body).Decode(&respBody); err != nil {
-		http.Error(w, "failed to parse JSON data", http.StatusBadRequest)
+		log.Printf("Failed to preview a trip: %v", err)
+		http.Error(w, "Failed to preview trip", http.StatusInternalServerError)
 		return
 	}
 
 	response := contracts.APIResponse{
-		Data: respBody,
+		Data: tripPreview,
 	}
 
-	util.WriteJson(w, resp.StatusCode, response)
+	util.WriteJson(w, http.StatusCreated, response)
 }
 
 var upgrader = websocket.Upgrader{

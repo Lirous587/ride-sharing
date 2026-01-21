@@ -9,15 +9,15 @@ service TripService {
 }
 
 message PreviewTripRequest {
-  string     user_id        = 1;
-  Coordinate start_location = 2;
-  Coordinate end_location   = 3;
+  string     userID         = 1;
+  Coordinate startLocation = 2;
+  Coordinate endLocation   = 3;
 }
 
 message PreviewTripResponse {
-  string            trip_id   = 1;
+  string            tripID   = 1;
   Route             route     = 2;
-  repeated RideFare ride_fare = 3;
+  repeated RideFare rideFare = 3;
 }
 
 message Coordinate {
@@ -37,7 +37,7 @@ message Route {
 
 message RideFare {
   string id           = 1;
-  string user_id      = 2;
-  string package_slug = 3;
-  string total_price  = 4;
+  string userID      = 2;
+  string packageSlug = 3;
+  string totalPrice  = 4;
 }
