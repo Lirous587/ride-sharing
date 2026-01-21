@@ -133,3 +133,44 @@ func handleRidersWebSocket(w http.ResponseWriter, r *http.Request) {
 		log.Printf("Receive message: %s", msg)
 	}
 }
+
+func handleTripStart(w http.ResponseWriter, r *http.Request) {
+	var reqBody startTripRequest
+
+	if err := json.NewDecoder(r.Body).Decode(&reqBody); err != nil {
+		http.Error(w, fmt.Sprintf("failed to parse JSON data: %v", err), http.StatusBadRequest)
+		return
+	}
+	defer r.Body.Close()
+
+	// validate
+	if reqBody.UserID == "" {
+		http.Error(w, "user id is required", http.StatusBadRequest)
+		return
+	}
+
+	if reqBody.RideFareID == "" {
+		http.Error(w, "ride fare id is required", http.StatusBadRequest)
+		return
+	}
+
+	tripService, err := grpc_clients.NewTripServiceClient()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer tripService.Close()
+
+	trip, err := tripService.Client.CreateTrip(r.Context(), reqBody.toProto())
+	if err != nil {
+		log.Printf("Failed to create a trip: %v", err)
+		http.Error(w, "Failed to create trip", http.StatusInternalServerError)
+		return
+	}
+
+	response := contracts.APIResponse{
+		Data: trip,
+	}
+
+	util.WriteJson(w, http.StatusCreated, response)
+}

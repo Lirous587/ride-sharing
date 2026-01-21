@@ -43,9 +43,13 @@ func (h *gRPCHandler) PreviewTrip(ctx context.Context, req *pb.PreviewTripReques
 	}
 
 	res := &pb.PreviewTripResponse{
-		Route: route.ToProto(),
+		Route:    route.ToProto(),
 		RideFare: []*pb.RideFare{},
 	}
 
 	return res, nil
+}
+
+func (h *gRPCHandler) CreateTrip(ctx context.Context, req *pb.CreateTripRequest) (*pb.CreateTripResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method CreateTrip not implemented")
 }
