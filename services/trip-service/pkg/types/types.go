@@ -14,6 +14,14 @@ type OsrmAPIResponse struct {
 	} `json:"routes"`
 }
 
+func (o *OsrmAPIResponse) GetDistance() float64 {
+	return o.Routes[0].Distance
+}
+
+func (o *OsrmAPIResponse) GetDuration() float64 {
+	return o.Routes[0].Duration
+}
+
 func (o *OsrmAPIResponse) ToProto() *pb.Route {
 	route := o.Routes[0]
 	geometry := route.Geometry.Coordinates
@@ -33,5 +41,17 @@ func (o *OsrmAPIResponse) ToProto() *pb.Route {
 		},
 		Distance: route.Distance,
 		Duration: route.Duration,
+	}
+}
+
+type PricingConfig struct {
+	PricePerUnitOfDistance float64
+	PricePreMinute         float64
+}
+
+func DefaultPricingConfig() *PricingConfig {
+	return &PricingConfig{
+		PricePerUnitOfDistance: 1.5,
+		PricePreMinute:         0.25,
 	}
 }

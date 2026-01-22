@@ -16,9 +16,9 @@ message PreviewTripRequest {
 }
 
 message PreviewTripResponse {
-  string            tripID   = 1;
-  Route             route    = 2;
-  repeated RideFare rideFare = 3;
+  string            tripID    = 1;
+  Route             route     = 2;
+  repeated RideFare rideFares = 3;
 }
 
 // rpc CreateTrip(CreateTripRequest) returns (CreateTripResponse)
@@ -47,8 +47,8 @@ message Route {
 }
 
 message RideFare {
-  string id          = 1;
-  string userID      = 2;
-  string packageSlug = 3;
-  string totalPrice  = 4;
+  string id                = 1;
+  string userID            = 2;
+  string packageSlug       = 3;
+  double totalPriceInCents = 4;
 }
