@@ -31,6 +31,22 @@ message CreateTripResponse {
   string tripID = 1;
 }
 
+message Trip {
+  string     id           = 1;
+  RideFare   selectedFare = 2;
+  Route      route        = 3;
+  string     status       = 4;
+  string     userID       = 5;
+  TripDriver diver        = 6;
+}
+
+message TripDriver {
+  string id             = 1;
+  string name           = 2;
+  string profilePicture = 3;
+  string carePlate      = 4;
+}
+
 message Coordinate {
   double latitude  = 1;
   double longitude = 2;
