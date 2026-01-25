@@ -7,7 +7,6 @@ import (
 	"sync"
 
 	"github.com/mmcloughlin/geohash"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type Service struct {
@@ -40,10 +39,10 @@ func (s *Service) RegisterDriver(driverID string, packageSlug string) (*pb.Drive
 	randomPlate := GenerateRandomPlate()
 
 	driver := &pb.Driver{
+		Id:             driverID,
 		Geohash:        geohash,
 		Location:       &pb.Location{Latitude: randomRoute[0][0], Longitude: randomRoute[0][1]},
 		Name:           "Lando Norris",
-		Id:             driverID,
 		PackageSlug:    packageSlug,
 		ProfilePicture: randomAvatar,
 		CarPlate:       randomPlate,

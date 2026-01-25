@@ -38,14 +38,24 @@ func handleDriversWebSocket(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	ctx := r.Context()
+
 	driverService, err := grpc_clients.NewDriverServiceClient()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	defer driverService.Close()
+	// Close connections
+	defer func() {
+		driverService.Client.UnregisterDriver(ctx, &pb.RegisterDriverRequest{
+			DriverID:    userID,
+			PackageSlug: packageSlug,
+		})
+		driverService.Close()
+		log.Printf("Driver unregister: %s", userID)
+	}()
 
-	driver, err := driverService.Client.RegisterDriver(r.Context(), &pb.RegisterDriverRequest{
+	driverData, err := driverService.Client.RegisterDriver(ctx, &pb.RegisterDriverRequest{
 		DriverID:    userID,
 		PackageSlug: packageSlug,
 	})
@@ -57,7 +67,7 @@ func handleDriversWebSocket(w http.ResponseWriter, r *http.Request) {
 
 	msg := contracts.WSMessage{
 		Type: "driver.cmd.register",
-		Data: driver,
+		Data: driverData.Driver,
 	}
 
 	if err := conn.WriteJSON(msg); err != nil {
