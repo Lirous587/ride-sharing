@@ -43,7 +43,7 @@ func (s *Service) RegisterDriver(driverID string, packageSlug string) (*pb.Drive
 		Geohash:        geohash,
 		Location:       &pb.Location{Latitude: randomRoute[0][0], Longitude: randomRoute[0][1]},
 		Name:           "Lando Norris",
-		Id:             primitive.NewObjectID().Hex(),
+		Id:             driverID,
 		PackageSlug:    packageSlug,
 		ProfilePicture: randomAvatar,
 		CarPlate:       randomPlate,
