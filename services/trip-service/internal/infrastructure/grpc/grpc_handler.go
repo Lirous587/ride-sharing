@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"log"
 	"ride-sharing/services/trip-service/internal/domain"
+	"ride-sharing/services/trip-service/internal/infrastructure/events"
 	pb "ride-sharing/shared/proto/trip"
 	"ride-sharing/shared/types"
-	"ride-sharing/shared/util"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -16,12 +16,15 @@ import (
 
 type gRPCHandler struct {
 	pb.UnimplementedTripServiceServer
-	service domain.TripService
+
+	service   domain.TripService
+	publisher *events.TripEventPublisher
 }
 
-func NewGRPCHandler(server *grpc.Server, service domain.TripService) *gRPCHandler {
+func NewGRPCHandler(server *grpc.Server, service domain.TripService, publisher *events.TripEventPublisher) *gRPCHandler {
 	handler := &gRPCHandler{
-		service: service,
+		service:   service,
+		publisher: publisher,
 	}
 
 	pb.RegisterTripServiceServer(server, handler)
@@ -68,28 +71,20 @@ func (h *gRPCHandler) CreateTrip(ctx context.Context, req *pb.CreateTripRequest)
 	fareID := req.GetRideFareID()
 	userID := req.GetUserID()
 
-	// 1.Fetch and validate the fare.
 	fare, err := h.service.GetAndValidateFare(ctx, fareID, userID)
 	if err != nil {
 		return nil, status.Error(codes.Unauthenticated, fmt.Sprintf("failed to validate fare's legality: %v", err))
 	}
 
-	// 2.Call create trip.
 	trip, err := h.service.CreateTrip(ctx, fare)
 	if err != nil {
 		return nil, status.Error(codes.Internal, fmt.Sprintf("failed to create trip: %v", err))
 	}
 
-	// 3.We also need to initialize an empty driver to the trip.
-	trip.Driver = &pb.TripDriver{
-		Id:             "12304",
-		Name:           "fuck damn",
-		ProfilePicture: util.GetRandomAvatar(2778),
-		CarePlate:      "10086",
+	if err := h.publisher.PublishTripCreated(ctx); err != nil {
+		return nil, status.Error(codes.Internal, fmt.Sprintf("failed to publish the trip created event: %v", err))
 	}
 
-	// 4.Add a comment at the end of the function to publish an event on the Async Comms moudle
-	// TODO publish an event
 	return &pb.CreateTripResponse{
 		TripID: trip.ID.Hex(),
 	}, nil
