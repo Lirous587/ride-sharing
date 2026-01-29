@@ -245,7 +245,7 @@ type Trip struct {
 	Route         *Route                 `protobuf:"bytes,3,opt,name=route,proto3" json:"route,omitempty"`
 	Status        string                 `protobuf:"bytes,4,opt,name=status,proto3" json:"status,omitempty"`
 	UserID        string                 `protobuf:"bytes,5,opt,name=userID,proto3" json:"userID,omitempty"`
-	Diver         *TripDriver            `protobuf:"bytes,6,opt,name=diver,proto3" json:"diver,omitempty"`
+	Driver        *TripDriver            `protobuf:"bytes,6,opt,name=driver,proto3" json:"driver,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -315,9 +315,9 @@ func (x *Trip) GetUserID() string {
 	return ""
 }
 
-func (x *Trip) GetDiver() *TripDriver {
+func (x *Trip) GetDriver() *TripDriver {
 	if x != nil {
-		return x.Diver
+		return x.Driver
 	}
 	return nil
 }
@@ -634,14 +634,14 @@ const file_trip_proto_rawDesc = "" +
 	"rideFareID\x12\x16\n" +
 	"\x06userID\x18\x02 \x01(\tR\x06userID\",\n" +
 	"\x12CreateTripResponse\x12\x16\n" +
-	"\x06tripID\x18\x01 \x01(\tR\x06tripID\"\xc5\x01\n" +
+	"\x06tripID\x18\x01 \x01(\tR\x06tripID\"\xc7\x01\n" +
 	"\x04Trip\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x122\n" +
 	"\fselectedFare\x18\x02 \x01(\v2\x0e.trip.RideFareR\fselectedFare\x12!\n" +
 	"\x05route\x18\x03 \x01(\v2\v.trip.RouteR\x05route\x12\x16\n" +
 	"\x06status\x18\x04 \x01(\tR\x06status\x12\x16\n" +
-	"\x06userID\x18\x05 \x01(\tR\x06userID\x12&\n" +
-	"\x05diver\x18\x06 \x01(\v2\x10.trip.TripDriverR\x05diver\"v\n" +
+	"\x06userID\x18\x05 \x01(\tR\x06userID\x12(\n" +
+	"\x06driver\x18\x06 \x01(\v2\x10.trip.TripDriverR\x06driver\"v\n" +
 	"\n" +
 	"TripDriver\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
@@ -700,7 +700,7 @@ var file_trip_proto_depIdxs = []int32{
 	9,  // 3: trip.PreviewTripResponse.rideFares:type_name -> trip.RideFare
 	9,  // 4: trip.Trip.selectedFare:type_name -> trip.RideFare
 	8,  // 5: trip.Trip.route:type_name -> trip.Route
-	5,  // 6: trip.Trip.diver:type_name -> trip.TripDriver
+	5,  // 6: trip.Trip.driver:type_name -> trip.TripDriver
 	6,  // 7: trip.Geometry.coordinates:type_name -> trip.Coordinate
 	7,  // 8: trip.Route.geometry:type_name -> trip.Geometry
 	0,  // 9: trip.TripService.PreviewTrip:input_type -> trip.PreviewTripRequest

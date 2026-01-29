@@ -37,7 +37,7 @@ message Trip {
   Route      route        = 3;
   string     status       = 4;
   string     userID       = 5;
-  TripDriver diver        = 6;
+  TripDriver driver       = 6;
 }
 
 message TripDriver {
