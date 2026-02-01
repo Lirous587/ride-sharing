@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"ride-sharing/services/trip-service/internal/domain"
 	tripTypes "ride-sharing/services/trip-service/pkg/types"
+	"ride-sharing/shared/proto/driver"
 	"ride-sharing/shared/proto/trip"
 	"ride-sharing/shared/types"
 
@@ -156,4 +157,12 @@ func getBaseFares() []*domain.RideFareModel {
 		},
 	}
 
+}
+
+func (s *service) GetTripByID(ctx context.Context, id string) (*domain.TripModel, error) {
+	return s.repo.GetTripByID(ctx, id)
+}
+
+func (s *service) UpdateTrip(ctx context.Context, id string, status string, trip *driver.Driver) error {
+	return s.repo.UpdateTrip(ctx, id, status, trip)
 }
