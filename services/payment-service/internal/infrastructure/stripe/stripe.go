@@ -15,6 +15,7 @@ type stripeClient struct {
 }
 
 func NewStripeClient(config *types.PaymentConfig) domain.PaymentProcessor {
+	stripe.Key = config.StripeSecretKey
 	return &stripeClient{
 		config: config,
 	}
