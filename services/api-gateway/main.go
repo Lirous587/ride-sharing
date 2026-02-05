@@ -8,7 +8,6 @@ import (
 	"os/signal"
 	"ride-sharing/shared/env"
 	"ride-sharing/shared/messaging"
-	"ride-sharing/shared/util"
 	"syscall"
 	"time"
 )
@@ -41,9 +40,8 @@ func main() {
 	mux.HandleFunc("/ws/drivers", func(w http.ResponseWriter, r *http.Request) {
 		handleDriversWebSocket(w, r, rabbitmq)
 	})
-
-	mux.HandleFunc("GET /test", func(w http.ResponseWriter, r *http.Request) {
-		util.WriteJson(w, 200, "ok")
+	mux.HandleFunc("/webhook/stripe", func(w http.ResponseWriter, r *http.Request) {
+		handleStripeWebhook(w, r, rabbitmq)
 	})
 
 	server := &http.Server{
