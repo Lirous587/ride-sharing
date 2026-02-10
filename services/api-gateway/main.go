@@ -23,7 +23,7 @@ func main() {
 
 	// Initialize Tracing
 	tracerCfg := tracing.Config{
-		ServiceName:    "api-getaway",
+		ServiceName:    "api-gateway",
 		Environment:    env.GetString("ENVIRONMENT", "development"),
 		JaegerEndpoint: env.GetString("JAEGER_ENDPOINT", "http://localhost:14268/api/traces"),
 	}
@@ -48,18 +48,18 @@ func main() {
 
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("POST /trip/preview", handleTripPreview)
-	mux.HandleFunc("POST /trip/start", handleTripStart)
+	mux.Handle("POST /trip/preview", tracing.WrapHandlerFunc(handleTripPreview, "/trip/preview"))
+	mux.Handle("POST /trip/start", tracing.WrapHandlerFunc(handleTripStart, "/trip/start"))
 
-	mux.HandleFunc("/ws/riders", func(w http.ResponseWriter, r *http.Request) {
+	mux.Handle("/ws/riders", tracing.WrapHandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		handleRidersWebSocket(w, r, rabbitmq)
-	})
-	mux.HandleFunc("/ws/drivers", func(w http.ResponseWriter, r *http.Request) {
+	}, "/ws/riders"))
+	mux.Handle("/ws/drivers", tracing.WrapHandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		handleDriversWebSocket(w, r, rabbitmq)
-	})
-	mux.HandleFunc("/webhook/stripe", func(w http.ResponseWriter, r *http.Request) {
+	}, "/ws/drivers"))
+	mux.Handle("/webhook/stripe", tracing.WrapHandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		handleStripeWebhook(w, r, rabbitmq)
-	})
+	}, "/webhook/stripe"))
 
 	server := &http.Server{
 		Addr:    httpAddr,
