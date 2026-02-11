@@ -58,7 +58,7 @@ func main() {
 	defer rabbitmq.Close()
 
 	// Starting the grpc server
-	grpcServer := grpcserver.NewServer()
+	grpcServer := grpcserver.NewServer(tracing.WithTracingInterceptors()...)
 	NewGRPCHandler(grpcServer, svc)
 
 	consumer := NewTripConsumer(rabbitmq, svc)
