@@ -57,7 +57,7 @@ func (c *tripConsumer) handleFindAndNotifyDrivers(ctx context.Context, payload *
 
 	if len(suitableIDs) == 0 {
 		// Notify the rider that no drivers are available
-		if err := c.rabbitmq.PublishMessage(ctx, contracts.TripEventNoDriversFound, &contracts.AmqpMessage{
+		if err := c.rabbitmq.PublishMessage(ctx, contracts.TripEventNoDriversFound, contracts.AmqpMessage{
 			OwnerID: payload.Trip.UserID,
 		}); err != nil {
 			log.Printf("Failed to publish message to exchange: %v", err)
@@ -78,7 +78,7 @@ func (c *tripConsumer) handleFindAndNotifyDrivers(ctx context.Context, payload *
 	}
 
 	// Notify the driver about a potential trip
-	if err := c.rabbitmq.PublishMessage(ctx, contracts.DriverCmdTripRequest, &contracts.AmqpMessage{
+	if err := c.rabbitmq.PublishMessage(ctx, contracts.DriverCmdTripRequest, contracts.AmqpMessage{
 		OwnerID: suitableDriverID,
 		Data:    marshalledEvent,
 	}); err != nil {

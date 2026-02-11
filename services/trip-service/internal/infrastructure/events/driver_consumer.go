@@ -89,7 +89,7 @@ func (c *driverConsumer) handleTripAccepted(ctx context.Context, tripID string, 
 	}
 
 	// Notify the rider that the driver has been assigned
-	if err := c.rabbitmq.PublishMessage(ctx, contracts.TripEventDriverAssigned, &contracts.AmqpMessage{
+	if err := c.rabbitmq.PublishMessage(ctx, contracts.TripEventDriverAssigned, contracts.AmqpMessage{
 		OwnerID: trip.UserID,
 		Data:    marshlledTrip,
 	}); err != nil {
@@ -104,7 +104,7 @@ func (c *driverConsumer) handleTripAccepted(ctx context.Context, tripID string, 
 		Currency: "USD",
 	})
 
-	if err := c.rabbitmq.PublishMessage(ctx, contracts.PaymentCmdCreateSession, &contracts.AmqpMessage{
+	if err := c.rabbitmq.PublishMessage(ctx, contracts.PaymentCmdCreateSession, contracts.AmqpMessage{
 		OwnerID: trip.UserID,
 		Data:    marshalledPayload,
 	},
@@ -130,7 +130,7 @@ func (c *driverConsumer) handleTripDeclined(ctx context.Context, tripID, riderID
 		return err
 	}
 
-	if err := c.rabbitmq.PublishMessage(ctx, contracts.TripEventDriverNotInterested, &contracts.AmqpMessage{
+	if err := c.rabbitmq.PublishMessage(ctx, contracts.TripEventDriverNotInterested, contracts.AmqpMessage{
 		OwnerID: riderID,
 		Data:    marshalledPayload,
 	},

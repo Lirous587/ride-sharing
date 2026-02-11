@@ -83,7 +83,7 @@ func (c *TripConsumer) handleTripAccepted(ctx context.Context, payload messaging
 	}
 
 	if err := c.rabbitmq.PublishMessage(ctx, contracts.PaymentEventSessionCreated,
-		&contracts.AmqpMessage{
+		contracts.AmqpMessage{
 			OwnerID: payload.UserID,
 			Data:    payloadBytes,
 		},

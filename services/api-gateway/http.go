@@ -163,7 +163,7 @@ func handleStripeWebhook(w http.ResponseWriter, r *http.Request, rb *messaging.R
 		if err := rb.PublishMessage(
 			ctx,
 			contracts.PaymentEventSuccess,
-			&message,
+			message,
 		); err != nil {
 			log.Printf("Error publishing payment event: %v", err)
 			http.Error(w, "Failed to publish payment event", http.StatusInternalServerError)
