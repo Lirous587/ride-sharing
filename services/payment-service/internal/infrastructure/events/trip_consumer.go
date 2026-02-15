@@ -3,7 +3,6 @@ package events
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"log"
 
 	"ride-sharing/services/payment-service/internal/domain"
@@ -32,8 +31,6 @@ func (c *TripConsumer) Listen() error {
 			log.Printf("Failed to unmarshal message: %v", err)
 			return err
 		}
-
-		return fmt.Errorf("simulated failure for testing")
 
 		var payload messaging.PaymentTripResponseData
 		if err := json.Unmarshal(message.Data, &payload); err != nil {
