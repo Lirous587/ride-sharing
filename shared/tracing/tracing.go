@@ -40,7 +40,7 @@ func InitTracer(cfg Config) (func(context.Context) error, error) {
 	return traceProvider.Shutdown, nil
 }
 
-func GetTracer(name string) trace.Tracer  {
+func GetTracer(name string) trace.Tracer {
 	return otel.GetTracerProvider().Tracer(name)
 }
 

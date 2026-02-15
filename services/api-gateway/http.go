@@ -106,7 +106,6 @@ func handleStripeWebhook(w http.ResponseWriter, r *http.Request, rb *messaging.R
 	ctx, span := tracer.Start(r.Context(), "handleStripeWebhook")
 	defer span.End()
 
-
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("failed to parse request body: %v", err), http.StatusBadRequest)
